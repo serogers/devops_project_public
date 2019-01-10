@@ -1,0 +1,48 @@
+<h1>Current Time</h1>
+🌺 Aloha! The current time is: <%= Time.now.to_s %> 🌺
+</br>
+
+<h1>Visits Count</h1>
+<% if connected_to_redis %>
+  Site has been visited <%= redis.incr("counts") %> times.
+<% else %>
+  Can't connect to Redis on port 6379 :(
+<% end %>
+<br />
+
+<h1>BNB Guest Book</h1>
+<% if connected_to_pg %>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Comment</th>
+    </tr>
+    <% if guest_book_entries.length == 0 %>
+      Guestbook hasn't been signed yet...
+    <% else %>
+      <% guest_book_entries.each do |guest_book_entry| %>
+        <tr>
+          <td><%= guest_book_entry.name %></td>
+          <td><%= guest_book_entry.comment %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </table>
+<% else %>
+   Can't connect to PostgreSQL :(
+<% end %>
+
+<% if connected_to_pg %>
+  <h1>Sign Guest Book</h1>
+  <form action="/guest_book_entries" id="guest_book_form" method="post">
+    Name:
+    <br/>
+    <input type="text" name="name">
+    <br />
+    Comment:
+    <br />
+    <textarea rows="4" cols="50" name="comment" form="guest_book_form"></textarea>
+    <br />
+    <input type="submit" value="Submit" form="guest_book_form">
+  </form> 
+<% end %>
